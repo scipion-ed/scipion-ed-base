@@ -309,7 +309,8 @@ class ProtImportDiffractionImages(EdBaseProtocol):
 
     def getRotationAxis(self):
         try:
-            axis = [float(s) for s in self.rotationAxis.get().split(",")]
+            axis = [float(s)
+                    for s in re.split('[,\s]', self.rotationAxis.get()) if s]
         except Exception as e:
             self.debug("Failed getting rotation axis due to exception:\n"
                        "{}".format(e))
