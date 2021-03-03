@@ -244,17 +244,9 @@ class ProtImportDiffractionImages(EdBaseProtocol):
     def _validate(self):
         self.loadPatterns()
         errors = []
-        if self.getFilesDir().split('.')[-1] == self.getFilesPattern().split('.')[-1]:
+        if len(glob(self._globPattern)) < 1:
             errors.append(
-                "A file name appears to be included in the directory path")
-        elif len(glob(self._globPattern)) < 1:
-            # check if parent directory exists
-            if not os.path.isdir(os.path.join("/".join(self._globPattern.split('/')[0:-1]))):
-                errors.append(
-                    "No files found. Check if pattern overlaps the path to the directory.")
-            # There is a directory, but no files are found
-            else:
-                errors.append("No files found. Is the directory empty?")
+                "No files found. This might be due to an empty directory or using the wrong file format")
         if self.useTemplate and self.badTsReplacement():
             errors.append("Only use digits and # to replace {TI}.")
         return errors
@@ -279,8 +271,8 @@ class ProtImportDiffractionImages(EdBaseProtocol):
         """ Expand the pattern using environ vars or username
         and also replacing special character # by digit matching.
         """
-        self._pattern = os.path.join(self.filesPath.get('').strip(),
-                                     self.filesPattern.get('').strip())
+        self._pattern = self.combinePaths(
+            self.getFilesDir(), self.getFilesPattern())
 
         def _replace(p, ti):
             p = p.replace('{TI}', ti)
@@ -293,16 +285,23 @@ class ProtImportDiffractionImages(EdBaseProtocol):
         self._templatePattern = _replace(
             self._pattern, self.tsReplacement.get())
 
+    def combinePaths(self, p1, p2):
+        # Remove file name from end of p1
+        if p1.split('.')[-1] == p2.split('.')[-1]:
+            p1 = "/".join(p1.split('/')[0:-1])
+        # Combine p1 and p2, but ignore overlapping directory names
+        path = os.path.join(
+            p1, *[i for i in p2.split('/') if i not in p1.split('/')])
+        return path
+
     def badTsReplacement(self):
         return bool(re.compile(r'[^0-9#]').search(self.tsReplacement.get()))
 
     def getFilesDir(self):
-        fd = self.filesPath.get('').strip()
-        return fd
+        return self.filesPath.get('').strip()
 
     def getFilesPattern(self):
-        fp = self.filesPattern.get('').strip()
-        return fp
+        return self.filesPattern.get('').strip()
 
     def getMatchingFiles(self):
         """ Return a sorted list with the paths of files that
