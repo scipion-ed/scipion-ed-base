@@ -255,6 +255,8 @@ class ProtImportDiffractionImages(EdBaseProtocol):
             # There is a directory, but no files are found
             else:
                 errors.append("No files found. Is the directory empty?")
+        if self.useTemplate and self.badTsReplacement():
+            errors.append("Only use digits and # to replace {TI}.")
         return errors
 
     def _summary(self):
@@ -290,6 +292,9 @@ class ProtImportDiffractionImages(EdBaseProtocol):
         self._globPattern = _replace(self._pattern, '*')
         self._templatePattern = _replace(
             self._pattern, self.tsReplacement.get())
+
+    def badTsReplacement(self):
+        return bool(re.compile(r'[^0-9#]').search(self.tsReplacement.get()))
 
     def getFilesDir(self):
         fd = self.filesPath.get('').strip()
