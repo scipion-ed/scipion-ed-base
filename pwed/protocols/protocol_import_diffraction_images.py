@@ -242,10 +242,19 @@ class ProtImportDiffractionImages(EdBaseProtocol):
 
     # -------------------------- INFO functions -------------------------------
     def _validate(self):
+        self.loadPatterns()
         errors = []
         if self.getFilesDir().split('.')[-1] == self.getFilesPattern().split('.')[-1]:
             errors.append(
                 "A file name appears to be included in the directory path")
+        elif len(glob(self._globPattern)) < 1:
+            # check if parent directory exists
+            if not os.path.isdir(os.path.join("/".join(self._globPattern.split('/')[0:-1]))):
+                errors.append(
+                    "No files found. Check if pattern overlaps the path to the directory.")
+            # There is a directory, but no files are found
+            else:
+                errors.append("No files found. Is the directory empty?")
         return errors
 
     def _summary(self):
