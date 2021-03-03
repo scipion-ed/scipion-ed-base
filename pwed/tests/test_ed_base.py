@@ -162,12 +162,10 @@ class TestEdBaseProtocols(pwtests.BaseTest):
         return owDict
 
     def test_import(self):
-        protImport = self._runImportImages('experiment_12/RED/{TI}.mrc')
-        output = getattr(protImport, 'outputDiffractionImages', None)
-        self.assertFalse(output is None)
 
-        protImport2 = self._runImportImages('experiment_12/SMV/data/{TI}.img')
-        output = getattr(protImport2, 'outputDiffractionImages', None)
+        protImport = self._runImportImages(
+            'lysozyme/experiment_14/SMV/data/{TI}.img')
+        output = getattr(protImport, 'outputDiffractionImages', None)
         self.assertFalse(output is None)
         for img in output:
             self.assertFalse(img.getFileName() is None)
@@ -183,7 +181,7 @@ class TestEdBaseProtocols(pwtests.BaseTest):
 
         overwriteDict = self.mockOverwrite()
         owImport = self._runImportImages(
-            'experiment_12/SMV/data/{TI}.img', **overwriteDict)
+            'lysozyme/experiment_14/SMV/data/{TI}.img', **overwriteDict)
         output = getattr(owImport, 'outputDiffractionImages', None)
         self.assertFalse(output is None)
         for img in output:
@@ -195,9 +193,9 @@ class TestEdBaseProtocols(pwtests.BaseTest):
             self.assertEqual(img.getBeamCenter(), (1000, 1000))
             self.assertEqual(img.getExposureTime(), 1000)
 
-        protImport3 = self._runImportImages(
-            'experiment_12/SMV/data/{TI}.img', skipImages=10, rotationAxis='1000,1000,0')
-        output = getattr(protImport3, 'outputDiffractionImages', None)
+        protImport2 = self._runImportImages(
+            'lysozyme/experiment_14/SMV/data/{TI}.img', skipImages=10, rotationAxis='1000,1000,0')
+        output = getattr(protImport2, 'outputDiffractionImages', None)
         self.assertFalse(output is None)
         for img in output:
             self.assertNotEqual(img.getObjId(), 0)
