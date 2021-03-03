@@ -29,6 +29,7 @@
 import os
 import re
 import pathlib
+import string
 from glob import glob
 
 import pyworkflow as pw
@@ -242,6 +243,9 @@ class ProtImportDiffractionImages(EdBaseProtocol):
     # -------------------------- INFO functions -------------------------------
     def _validate(self):
         errors = []
+        if self.getFilesDir().split('.')[-1] == self.getFilesPattern().split('.')[-1]:
+            errors.append(
+                "A file name appears to be included in the directory path")
         return errors
 
     def _summary(self):
@@ -277,6 +281,14 @@ class ProtImportDiffractionImages(EdBaseProtocol):
         self._globPattern = _replace(self._pattern, '*')
         self._templatePattern = _replace(
             self._pattern, self.tsReplacement.get())
+
+    def getFilesDir(self):
+        fd = self.filesPath.get('').strip()
+        return fd
+
+    def getFilesPattern(self):
+        fp = self.filesPattern.get('').strip()
+        return fp
 
     def getMatchingFiles(self):
         """ Return a sorted list with the paths of files that
