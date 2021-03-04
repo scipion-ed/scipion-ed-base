@@ -56,6 +56,11 @@ def main():
          action="version",
          version=pwed.__version__)
 
+    _add("project",
+         nargs='?',
+         default=None,
+         help="Directly open the specified project ('last' or specified by name)")
+
     # _add("--wait_for", nargs='*', type=int, default=[],
     #         dest='waitProtIds', metavar='PROTOCOL_ID',
     #         help="List of protocol ids that should be not running "
@@ -73,6 +78,10 @@ def main():
         plugins = pwed.Domain.getPlugins()
         for p in plugins:
             print("   ", p)
+
+    if args.project:
+        from pyworkflow.apps.pw_project import openProject
+        openProject(args.project)
 
     # When no argument is passed, we should open the GUI
     if len(sys.argv) == 1:
