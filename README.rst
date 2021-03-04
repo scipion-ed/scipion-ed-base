@@ -53,7 +53,7 @@ we need to:
     rst-lint README.rst
 
     python setup.py sdist
-    twine upload dist/scipion-ed-0.0.1a3.tar.gz
+    twine upload dist/scipion-ed-3.0.1rc1.tar.gz
 
 Running tests (TO BE UPDATED)
 .............................
