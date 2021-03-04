@@ -41,16 +41,20 @@ def main():
 
     # _add("projPath", metavar='PROJECT_NAME',
     #         help="Project database path.")
-    # 
+    #
     # _add("dbPath", metavar='DATABASE_PATH',
     #         help="Protocol database path.")
-    # 
+    #
     # _add("protId", type=int, metavar='PROTOCOL_ID',
     #         help="Protocol ID.")
 
     _add("-e", "--env",
          action='store_true',
          help="Print the existing environment")
+
+    _add("--version",
+         action="version",
+         version=pwed.__version__)
 
     # _add("--wait_for", nargs='*', type=int, default=[],
     #         dest='waitProtIds', metavar='PROTOCOL_ID',
@@ -59,7 +63,6 @@ def main():
     #              "run will be executed.")
 
     args = parser.parse_args()
-
 
     if args.env:
         print("\nEnvironment:")
